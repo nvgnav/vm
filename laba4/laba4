@@ -1,0 +1,74 @@
+#Бояршинов МГ, 2006 -- Численные методы.ч4
+
+import matplotlib.pyplot as plt
+from math import *
+from scipy.integrate import quad
+from methods import left_rect, right_rect, central_rect, trapezoid, parabola
+
+# Функция, которая будет интегрироваться
+def f(x):
+    return sin(x)
+
+# Аналитическое решение функции для сравнения
+def ilf(x):
+    return 1 - cos(x)
+
+# Функция для генерации значений оси x
+def plotik(r, le, stepik):
+    while r <= (le - stepik):
+        plotx.append(r)
+        r += step
+
+# Начальные данные
+a = 0  # Начало
+b = 10  # Конец
+n = 100  # Кол-во интервалов
+step = (b - a) / n  # Размер шага
+
+res = quad(f, 0, 10)  # Аналитическое решение функции
+print(res)
+
+# Инициализация списков для построения графиков
+plotx = []  
+plotl = []  
+plotr = []  
+plotc = []  
+plott = []  
+plotp = []  # Список для значений метода симпсона
+
+# Создание графиков
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, figsize=(8, 6))
+
+plotik(a, b, step) # Генерация значений оси х
+# вычисление значений для каждого метода численного интегрирования
+left_rect(f, a, b, step, plotl, ilf)
+right_rect(f, a, b, step, plotr, ilf)
+central_rect(f, a, b, step, plotc, ilf)
+trapezoid(f, a, b, step, plott, ilf)
+parabola(f, a, b, step, plotp, ilf)
+
+# График для метода прямоугольников
+ax1.plot(plotx, plotl, color='red', ls='--', marker='*', label='левый')
+ax1.plot(plotx, plotr, color='orange', ls='-', marker='^', label='правый')
+ax1.plot(plotx, plotc, color='yellow', ls='dotted', marker='8', label='центральный')
+ax1.set_title('Метод прямоугольников')
+ax1.set_xlabel('Шаг')
+ax1.set_ylabel('Отклонение')
+ax1.legend()
+ax1.grid(True)
+
+# График для метода трапеций
+ax2.plot(plotx, plott, color='purple', ls='--', marker='*', label='трапеции')
+ax2.set_xlabel('Шаг')
+ax2.set_ylabel('Отклонение')
+ax2.legend()
+ax2.grid(True)
+
+# График для метода Симпсона
+ax3.plot(plotx, plotp, color='blue', ls='--', marker='*', label='симпсон')
+ax3.set_xlabel('Шаг')
+ax3.set_ylabel('Отклонение')
+ax3.legend()
+ax3.grid(True)
+
+plt.show()
